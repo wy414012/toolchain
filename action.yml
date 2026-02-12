@@ -1,6 +1,6 @@
-name: 'rust-toolchain'
+name: 'setup-rust-toolchain'
 description: 'Install the Rust toolchain'
-author: 'actions-rs team'
+author: 'wy414012'
 branding:
   icon: play-circle
   color: black
