@@ -8,7 +8,7 @@
 
 ### 使用 v2 标签(需要创建 Release)
 ```yaml
-- uses: wy414012/toolchain@v2
+- uses: wy414012/toolchain@v2.0.0
   with:
     toolchain: stable
 ```

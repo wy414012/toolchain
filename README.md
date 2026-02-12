@@ -35,7 +35,7 @@ jobs:
     name: Rust project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install latest nightly
         uses: wy414012/toolchain@master
         with:
@@ -90,7 +90,7 @@ minimally required set of components, for example:
 
 ```yaml
 - name: Install minimal nightly
-  uses: actions-rs/toolchain@v1
+  uses: wy414012/toolchain@v2.0.0
   with:
     profile: minimal
     toolchain: nightly
