@@ -71,12 +71,9 @@ async function rustc(): Promise<void> {
 
         core.setOutput("rustc", version.long);
         core.setOutput("rustc_hash", version.hash);
-        core.exportVariable("RUSTC", version.long);
-        core.exportVariable("RUSTC_HASH", version.hash);
     } catch (e) {
         core.warning(String(e));
         core.setOutput("rustc", parseShort(stdout));
-        core.exportVariable("RUSTC", parseShort(stdout));
     }
 }
 
@@ -89,10 +86,8 @@ async function cargo(): Promise<void> {
         const version = parseFull(stdout);
 
         core.setOutput("cargo", version.long);
-        core.exportVariable("CARGO", version.long);
     } catch (e) {
         core.setOutput("cargo", parseShort(stdout));
-        core.exportVariable("CARGO", parseShort(stdout));
     }
 }
 
@@ -101,10 +96,8 @@ async function rustup(): Promise<void> {
     try {
         const version = parseFull(stdout);
         core.setOutput("rustup", version.long);
-        core.exportVariable("RUSTUP", version.long);
     } catch (e) {
         core.setOutput("rustup", parseShort(stdout));
-        core.exportVariable("RUSTUP", parseShort(stdout));
     }
 }
 
