@@ -37,14 +37,27 @@ export class RustUp {
                 installerUrl = "https://sh.rustup.rs";
             }
 
-            await exec.exec(
-                "sh",
-                ["-s", "--", "-y", "--default-toolchain", "none"],
-                {
-                    input: Buffer.from(`curl -fsSL ${installerUrl}`),
-                },
-            );
+            // Download and execute rustup installer
+            await exec.exec("sh", [
+                "-c",
+                `curl -fsSL ${installerUrl} | sh -s -- -y --default-toolchain none`,
+            ]);
 
+            // Add cargo bin to PATH for subsequent commands
+            const cargoPath =
+                process.env.HOME ||
+                (os.platform() === "win32"
+                    ? process.env.USERPROFILE
+                    : undefined);
+            if (cargoPath) {
+                const cargoBin = `${cargoPath}/.cargo/bin`;
+                const currentPath = process.env.PATH || "";
+                if (!currentPath.includes(cargoBin)) {
+                    core.addPath(cargoBin);
+                }
+            }
+
+            // Try to find rustup again after installation
             rustupPath = await io.which("rustup", true);
         }
 
@@ -116,7 +129,9 @@ export class RustUp {
         }
 
         if (options?.components && options.components.length > 0) {
-            args.push("-c", ...options.components);
+            for (const component of options.components) {
+                args.push("-c", component);
+            }
         }
 
         if (options?.allowDowngrade) {
