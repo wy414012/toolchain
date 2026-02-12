@@ -1,4 +1,4 @@
-name: 'setup-rust-toolchain'
+name: 'rustup-toolchain'
 description: 'Install the Rust toolchain'
 author: 'wy414012'
 branding:
