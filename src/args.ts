@@ -1,4 +1,4 @@
-import { input } from "@actions-rs/core";
+import * as core from "@actions/core";
 import { debug } from "@actions/core";
 import { existsSync, readFileSync } from "fs";
 
@@ -12,7 +12,7 @@ export interface ToolchainOptions {
 }
 
 function determineToolchain(overrideFile: string): string {
-    const toolchainInput = input.getInput("toolchain", { required: false });
+    const toolchainInput = core.getInput("toolchain", { required: false });
 
     if (toolchainInput) {
         debug(`using toolchain from input: ${toolchainInput}`);
@@ -21,7 +21,7 @@ function determineToolchain(overrideFile: string): string {
 
     if (!existsSync(overrideFile)) {
         throw new Error(
-            "toolchain input was not given and repository does not have a rust-toolchain file"
+            "toolchain input was not given and repository does not have a rust-toolchain file",
         );
     }
 
@@ -36,17 +36,20 @@ function determineToolchain(overrideFile: string): string {
 }
 
 export function getToolchainArgs(overrideFile: string): ToolchainOptions {
-    let components: string[] | undefined = input.getInputList("components");
+    const componentsInput = core.getInput("components");
+    let components: string[] | undefined = componentsInput
+        ? componentsInput.split(",").map((c) => c.trim())
+        : undefined;
     if (components && components.length === 0) {
         components = undefined;
     }
 
     return {
         name: determineToolchain(overrideFile),
-        target: input.getInput("target") || undefined,
-        default: input.getInputBool("default"),
-        override: input.getInputBool("override"),
-        profile: input.getInput("profile") || undefined,
+        target: core.getInput("target") || undefined,
+        default: core.getInput("default") === "true",
+        override: core.getInput("override") === "true",
+        profile: core.getInput("profile") || undefined,
         components: components,
     };
 }

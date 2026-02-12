@@ -35,9 +35,9 @@ jobs:
     name: Rust project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v2
         with:
             toolchain: nightly
             override: true

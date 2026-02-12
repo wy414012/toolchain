@@ -3,7 +3,8 @@ import path from "path";
 
 import * as args from "./args";
 import * as versions from "./versions";
-import { RustUp, ToolchainOptions } from "@actions-rs/core";
+import { RustUp } from "./rustup";
+import { ToolchainOptions } from "./rustup";
 
 async function run(): Promise<void> {
     // we use path.join to make sure this works on Windows, Linux and MacOS
@@ -30,7 +31,6 @@ async function run(): Promise<void> {
     }
 
     if (opts.profile) {
-        // @ts-ignore: TS2345
         await rustup.setProfile(opts.profile);
     }
 
@@ -90,8 +90,8 @@ async function main(): Promise<void> {
     try {
         await run();
     } catch (error) {
-        core.setFailed(error.message);
+        core.setFailed(String(error));
     }
 }
 
-main();
+void main();

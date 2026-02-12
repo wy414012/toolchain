@@ -2,6 +2,7 @@ import { getToolchainArgs } from "../src/args";
 import { morph } from "mock-env";
 import { sync as tempWriteSync } from "temp-write";
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 describe("actions-rs/toolchain", () => {
     it("Parses action input into toolchain options", () => {
         const args = morph(
@@ -12,7 +13,7 @@ describe("actions-rs/toolchain", () => {
                 INPUT_TOOLCHAIN: "nightly-2019-04-20",
                 INPUT_DEFAULT: "false",
                 INPUT_OVERRIDE: "true",
-            }
+            },
         );
 
         expect(args.name).toBe("nightly-2019-04-20");
@@ -27,7 +28,7 @@ describe("actions-rs/toolchain", () => {
             },
             {
                 INPUT_TOOLCHAIN: "nightly",
-            }
+            },
         );
 
         expect(args.name).toBe("nightly");
@@ -46,7 +47,7 @@ describe("actions-rs/toolchain", () => {
             },
             {
                 INPUT_TOOLCHAIN: "nightly",
-            }
+            },
         );
 
         expect(args.name).toBe("nightly");
