@@ -7,6 +7,7 @@ export interface ToolchainOptions {
     default?: boolean;
     override?: boolean;
     components?: string[];
+    profile?: string;
     noSelfUpdate?: boolean;
     allowDowngrade?: boolean;
 }
@@ -57,10 +58,12 @@ export class RustUp {
 
     async supportProfiles(): Promise<boolean> {
         try {
-            await exec.exec(this.path, ["set", "profile", "help"], {
-                silent: true,
-                ignoreReturnCode: true,
-            });
+            const { stdout } = await this.execCapture(["--version"]);
+            const versionMatch = stdout.match(/rustup (\d+\.\d+\.\d+)/);
+            if (versionMatch) {
+                const major = parseInt(versionMatch[1].split(".")[0], 10);
+                return major >= 1;
+            }
             return true;
         } catch {
             return false;
@@ -69,14 +72,29 @@ export class RustUp {
 
     async supportComponents(): Promise<boolean> {
         try {
-            await exec.exec(this.path, ["component", "help"], {
-                silent: true,
-                ignoreReturnCode: true,
-            });
+            const { stdout } = await this.execCapture(["--version"]);
+            const versionMatch = stdout.match(/rustup (\d+\.\d+\.\d+)/);
+            if (versionMatch) {
+                const major = parseInt(versionMatch[1].split(".")[0], 10);
+                return major >= 1;
+            }
             return true;
         } catch {
             return false;
         }
+    }
+
+    private async execCapture(args: string[]): Promise<{ stdout: string }> {
+        let stdout = "";
+        await exec.exec(this.path, args, {
+            listeners: {
+                stdout: (data: Buffer) => {
+                    stdout += data.toString();
+                },
+            },
+            silent: true,
+        });
+        return { stdout };
     }
 
     async selfUpdate(): Promise<void> {
@@ -91,28 +109,26 @@ export class RustUp {
         name: string,
         options?: ToolchainOptions,
     ): Promise<void> {
-        const args: string[] = ["install", name];
+        const args: string[] = ["toolchain", "install", name];
 
-        if (options?.default) {
-            args.push("--default");
+        if (options?.profile) {
+            args.push("--profile", options.profile);
         }
 
         if (options?.components && options.components.length > 0) {
-            args.push("--component", ...options.components);
+            args.push("-c", ...options.components);
         }
 
         if (options?.allowDowngrade) {
-            args.push("--force");
+            args.push("--allow-downgrade");
         }
 
         if (options?.noSelfUpdate) {
-            // rustup install doesn't have a no-self-update flag
-            // this is handled by calling selfUpdate separately when needed
+            args.push("--no-self-update");
         }
 
-        if (options?.override) {
-            // Override is set via directory, not via install command
-            // This will be handled separately
+        if (options?.default) {
+            args.push("--default");
         }
 
         await this.call(args);

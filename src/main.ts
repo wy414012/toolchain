@@ -30,14 +30,13 @@ async function run(): Promise<void> {
         }
     }
 
-    if (opts.profile) {
-        await rustup.setProfile(opts.profile);
-    }
-
     const installOptions: ToolchainOptions = {
         default: opts.default,
         override: opts.override,
     };
+    if (opts.profile) {
+        installOptions.profile = opts.profile;
+    }
     if (opts.components) {
         installOptions.components = opts.components;
     }

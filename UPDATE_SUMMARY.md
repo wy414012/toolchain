@@ -2,9 +2,11 @@
 
 ## 修复的问题
 1. ✅ 修复了 24 个 "set-output is deprecated" 警告
-2. ✅ 修复了 1 个 CI 错误
-3. ✅ 更新了已废弃的依赖包
-4. ✅ 迁移到 Node.js 20 运行时
+2. ✅ 修复了 1 个 CI 测试错误
+3. ✅ 修复了 install_nightly CI 错误
+4. ✅ 修复了 install_stable_in_docker CI 错误
+5. ✅ 更新了已废弃的依赖包
+6. ✅ 迁移到 Node.js 20 运行时
 
 ## 主要变更
 
@@ -22,9 +24,16 @@
 
 ### 2. 代码变更
 - **src/rustup.ts**: 新增文件,实现本地 RustUp 类替代已废弃的 @actions-rs/core
+  - 修复 rustup 命令: `install` → `toolchain install`
+  - 添加 `--profile` 参数支持
+  - 添加 `--allow-downgrade` 支持
+  - 实现 `execCapture` 方法用于版本检查
 - **src/args.ts**: 更新为使用 @actions/core 的 getInput 方法
 - **src/versions.ts**: 更新输出方法,同时使用 setOutput 和 exportVariable
-- **src/main.ts**: 更新导入,移除 @ts-ignore 注释
+- **src/main.ts**:
+  - 更新导入,移除 @ts-ignore 注释
+  - 简化 profile 设置逻辑
+  - 移除重复代码
 - **action.yml**: 运行时从 node12 更新到 node20
 - **.eslintrc.json**: 更新配置以兼容新版本
 - **.npmrc**: 移除 GitHub Packages registry 配置
@@ -54,5 +63,7 @@
 更新后,CI 工作流应该不再显示:
 - ❌ `set-output is deprecated` 警告 (24个)
 - ❌ `test` 错误 (1个)
+- ❌ `install_nightly` 错误 (rustup 退出码 1)
+- ❌ `install_stable_in_docker` 错误 (找不到 rustup)
 
 所有警告和错误已解决。
