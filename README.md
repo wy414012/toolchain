@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install latest nightly
-        uses: actions-rs/toolchain@v2
+        uses: wy414012/toolchain@master
         with:
             toolchain: nightly
             override: true
@@ -47,7 +47,7 @@ jobs:
       # as it is set as an "override" for current directory
 
       - name: Run cargo check
-        uses: actions-rs/cargo@v1
+        run: cargo check
         with:
           command: check
 ```
